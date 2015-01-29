@@ -32,7 +32,7 @@ public class ConfigFactory {
 		config = new Config();
 		String activeProfile = System.getProperty("spring.profiles.active");
 		if (activeProfile == null)
-			activeProfile = System.getProperty("spring.profiles.default");
+			activeProfile = "develop";
 
 		Resource resource = new ClassPathResource("/fileupload.properties");
 		InputStream is = null;
