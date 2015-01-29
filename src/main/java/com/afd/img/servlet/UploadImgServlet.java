@@ -24,7 +24,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 
 import com.afd.img.config.ConfigFactory;
@@ -109,26 +108,23 @@ public class UploadImgServlet extends HttpServlet {
 
 			}
 
-			String contentType = item.getContentType();
-			MimeType mimeType = MimeTypeUtils.parseMimeType(contentType);
-
-			// 非图片文件
-			if (!mimeType.getType().equals(ImgHelper.IMG_TYPE)) {
-				uploadResponse.setCode(-2);
-				uploadResponse.setMsg("not image file");
-				return uploadResponse;
-			}
-
 			// 保存文件
 			String fileName = item.getName();
 			if (fileName != null) {
 				fileName = FilenameUtils.getName(fileName);
 			}
 
+			String fileExt = "jpeg";
+			int index = fileName.lastIndexOf(".");
+
+			if (index != -1)
+				fileExt = fileName.substring(index + 1);
+
 			InputStream inputStream = item.openStream();
 
-			ImgResource resource = ImgHelper.saveImg(fileName,
-					mimeType.getSubtype(), inputStream);
+			ImgResource resource = ImgHelper.saveImg(fileName, fileExt,
+					inputStream);
+
 			// 保存失败
 			if (resource == null) {
 				uploadResponse.setCode(-3);
